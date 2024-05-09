@@ -16,25 +16,13 @@ import db.model.Wifidetail;
 
 public class publicAPI {
 	public static void InsertDB(List<Wifidetail> wifiDetails) {
-		//db 정보 가져오기 
-        String dburl = "jdbc:mariadb://localhost:3306/public_wifi";
-        String dbUserId = "testuser";
-        String dbPassword = "tlarb3011";
-        
-      //드라이버가져오기 
-        try {
-            Class.forName("org.mariadb.jdbc.Driver");
-            System.out.println("연결성공");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        
+		Database db = new Database();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         
         try {
-        	connection = DriverManager.getConnection(dburl,dbUserId,dbPassword);
+        	connection = db.getDb();
         	
         	String sql = " insert into wifi_detail (id, city, name, street, address, floor, build_type, builder, service_type, wifi_type, set_date, "
         			+ " inout_door, wifi_environ, work_date) "
@@ -93,25 +81,13 @@ public class publicAPI {
         
 	}
 	public static void InsertDB2(List<Wifilocate> wifilocates) {
-		//db 정보 가져오기 
-        String dburl = "jdbc:mariadb://localhost:3306/public_wifi";
-        String dbUserId = "testuser";
-        String dbPassword = "tlarb3011";
-        
-      //드라이버가져오기 
-        try {
-            Class.forName("org.mariadb.jdbc.Driver");
-            System.out.println("연결성공");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        
+		Database db = new Database();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         
         try {
-        	connection = DriverManager.getConnection(dburl,dbUserId,dbPassword);
+        	connection = db.getDb();
         	
         	String sql = " insert into wifi_locate (id, name, lat, lnt) "
         			+ "VALUES ( ?, ?, ?, ? ); ";
@@ -159,12 +135,11 @@ public class publicAPI {
         
 	}
 	
-    public static void main(String[] args) {
-    	//API요청 부분 
+	public static JSONArray getWifiData(String startNum,String endNum) {
     	//key 요청타입 페이징시작번호 페이징끝번호 자치구(선택) 도로명주소(선택) 
         String key = "685a6a76786162733638485257746b";
-        String startNum = "1";
-        String endNum = "1000";
+        //String startNum = "1";
+        //String endNum = "1000";
         String url = "http://openapi.seoul.go.kr:8088/" + key + "/json/TbPublicWifiInfo/"+startNum+"/"+endNum+"/";      
 
         try {	
@@ -191,40 +166,31 @@ public class publicAPI {
             JSONObject data = (JSONObject) jsonResponse.get("TbPublicWifiInfo");
 
          // 특정 데이터 접근 예제
-            JSONArray array = (JSONArray) data.get("row");	
-            //List<Wifidetail> wifiList = new ArrayList<>();
-            List<Wifilocate> wifiList = new ArrayList<>();
-            for(Object ob : (JSONArray)array) {
-            	Wifilocate wifilocate = new Wifilocate(
-//            			(String) ((JSONObject) ob).get("X_SWIFI_MGR_NO"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_WRDOFC"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_MAIN_NM"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_ADRES1"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_ADRES2"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_INSTL_FLOOR"), //없는것도있음 
-//            			(String) ((JSONObject) ob).get("X_SWIFI_INSTL_TY"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_INSTL_MBY"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_SVC_SE"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_CMCWR"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_CNSTC_YEAR"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_INOUT_DOOR"),
-//            			(String) ((JSONObject) ob).get("X_SWIFI_REMARS3"), //없는것도있음
-//            			(String) ((JSONObject) ob).get("WORK_DTTM")
-            			(String) ((JSONObject) ob).get("X_SWIFI_MGR_NO"),
-            			(String) ((JSONObject) ob).get("X_SWIFI_MAIN_NM"),
-            			(String) ((JSONObject) ob).get("LAT"),
-            			(String) ((JSONObject) ob).get("LNT")
-            			);
-            	
-            	wifiList.add(wifilocate);
-            	System.out.println(wifilocate);
-          
-            }
-            //InsertDB(wifiList);
-            InsertDB2(wifiList);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+          JSONArray array = (JSONArray) data.get("row");
+          return array;
+          }catch (Exception e) {
+              e.printStackTrace();
+          }
+		return null;
+	}
+	
+    public static void main(String[] args) {
+     // 특정 데이터 접근 예제
+        JSONArray array = getWifiData("1","1000");	
+        List<Wifilocate> wifiList = new ArrayList<>();
+        for(Object ob : (JSONArray)array) {
+        	Wifilocate wifilocate = new Wifilocate(
+        			(String) ((JSONObject) ob).get("X_SWIFI_MGR_NO"),
+        			(String) ((JSONObject) ob).get("X_SWIFI_MAIN_NM"),
+        			(String) ((JSONObject) ob).get("LAT"),
+        			(String) ((JSONObject) ob).get("LNT")
+        			);
+        	
+        	wifiList.add(wifilocate);
+        	System.out.println(wifilocate);
+      
         }
-    }
+        InsertDB2(wifiList);
+    } 
 }
+

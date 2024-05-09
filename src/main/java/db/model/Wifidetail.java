@@ -15,7 +15,9 @@ public class Wifidetail {
 	String inout_door;
 	String wifi_environ;
 	String word_date;
-	
+	public Wifidetail() {
+		
+	}
 	public Wifidetail(String id, String city, String name, String street, String address, String floor,
 			String bulid_type, String bulider, String service_type, String wifi_type, String set_date,
 			String inout_door, String wifi_environ, String word_date) {
@@ -112,10 +114,10 @@ public class Wifidetail {
 	public void setWifi_environ(String wifi_environ) {
 		this.wifi_environ = wifi_environ;
 	}
-	public String getWord_date() {
+	public String getWork_date() {
 		return word_date;
 	}
-	public void setWord_date(String word_date) {
+	public void setWork_date(String word_date) {
 		this.word_date = word_date;
 	}
 	

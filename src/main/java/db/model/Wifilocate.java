@@ -13,6 +13,10 @@ public class Wifilocate {
 		this.lnt = lnt;
 	}
 
+	public Wifilocate() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getId() {
 		return id;
 	}
