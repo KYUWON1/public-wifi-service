@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class WifiService {
-	//여기도 성공여부 알려주어여함 
+	
 	public List<Wifilocate> gettop20(String lat,String lnt) {
 		Database db = new Database();
 		
@@ -53,64 +53,7 @@ public class WifiService {
 		
 		return result;
 	}
-
-	//나중에 저장 성공 실패 알려주어여함 
-	public void savehistory(List<Wifilocate> list) {
-		Database db = new Database();
-		
-		Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet rs = null;
-        try {
-        	connection = db.getDb();
-        	
-        	//
-        	String sql = "insert into wifi_history (id, name, lat, lnt) VALUES  ( ?, ?, ?, ? ) " +
-        				" ON DUPLICATE KEY UPDATE id=id; "
-        			;
-        	
-        	preparedStatement = connection.prepareStatement(sql);
-        	for(Wifilocate wc :list) {
-                preparedStatement.setString(1, wc.getId());
-                preparedStatement.setString(2, wc.getName());
-                preparedStatement.setString(3, wc.getLat());
-                preparedStatement.setString(4, wc.getLnt());
-                
-                preparedStatement.addBatch();
-        	}
-        	//배치 단위로 처리 
-        	int[] updateCounts = preparedStatement.executeBatch();
-        	connection.commit();
-        }catch (SQLException e) {
-            System.out.println("에러발생");
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                if(rs != null && !rs.isClosed()){
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if(preparedStatement != null && !preparedStatement.isClosed()){
-                    preparedStatement.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if(connection != null && !connection.isClosed()){
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }  
-	}
-
+ 
 	public List<Wifilocate> gethistory(){
 		Database db = new Database();
 		
@@ -142,6 +85,68 @@ public class WifiService {
 		return result;
 	}
 
+	public List<Bookmark> getBmList(){
+		Database db = new Database();
+		List<Bookmark> list = new ArrayList<>();
+		
+		Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        
+        try {
+        	connection = db.getDb();
+        	
+        	String sql = "select * from bookmark_list order by sequence;";		
+        	
+        	preparedStatement = connection.prepareStatement(sql);
+        	
+        	rs = preparedStatement.executeQuery();
+        	while(rs.next()) {
+        		Bookmark bm = new Bookmark();
+        		bm.setId(rs.getInt("id"));
+        		bm.setName(rs.getString("name"));
+        		bm.setSequence(rs.getInt("sequence"));
+        		bm.setReg_date(rs.getDate("registration_date"));
+        		bm.setMod_date(rs.getDate("modification_date"));
+        		list.add(bm);
+        	}
+        	if(list.size() != 0) {
+        		return list;
+        	}
+        }catch (SQLException e) {
+            System.out.println("에러발생");
+            throw new RuntimeException(e);
+        } finally {
+            closeResources(rs, preparedStatement, connection);
+        }
+		return null;
+	}
+	
+	public void insertBm(String name, int seq) {
+		Database db = new Database();
+		List<Bookmark> list = new ArrayList<>();
+		
+		Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        try {
+        	connection = db.getDb();
+        	
+        	String sql = " insert into bookmark_list (name,sequence) values ( ?, ? )";		
+        	
+        	preparedStatement = connection.prepareStatement(sql);
+        	preparedStatement.setString(1,name);
+        	preparedStatement.setInt(2, seq);
+        	
+        	int affectedrow = preparedStatement.executeUpdate();
+        }catch (SQLException e) {
+            System.out.println("에러발생");
+            throw new RuntimeException(e);
+        } finally {
+            closeResources(rs, preparedStatement, connection);
+        }
+	}
+	
 	public Wifidetail getDetail(String id) {
 		Database db = new Database();
 		Wifidetail wd = new Wifidetail();
@@ -185,67 +190,9 @@ public class WifiService {
 		return wd;
 	}
 
-	public void InsertBm(String id) {
+	public List<BmWifi> getWifitoBm(){
 		Database db = new Database();
-		Wifibm bm = new Wifibm();
-		
-		Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet rs = null;
-        try {
-        	connection = db.getDb();
-        	
-        	//정보를 가져올 쿼리 
-        	String selectSql = "SELECT d.id, d.name, d.city, d.street, d.address, l.lat, l.lnt " +
-                    "FROM wifi_locate l " +
-                    "LEFT JOIN wifi_detail d ON l.id = d.id " +
-                    "WHERE l.id = ? ";
-        	
-        	//가져온 정보를 북마크에 넣을 쿼리 
-			 String insertSql = "INSERT INTO wifi_bm (id, city, name, street, address, lat, lnt) " +
-			                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
-			
-			 preparedStatement = connection.prepareStatement(selectSql);
-			
-			 preparedStatement.setString(1, id);
-			 rs = preparedStatement.executeQuery();
-			 
-			 preparedStatement = connection.prepareStatement(insertSql);
-			 if (rs.next()) {
-			     preparedStatement.setString(1, rs.getString("id"));
-			     preparedStatement.setString(2, rs.getString("city"));
-			     preparedStatement.setString(3, rs.getString("name"));
-			     preparedStatement.setString(4, rs.getString("street"));
-			     preparedStatement.setString(5, rs.getString("address"));
-			     preparedStatement.setString(6, rs.getString("lat"));
-			     preparedStatement.setString(7, rs.getString("lnt"));
-			
-			     // Execute the insert statement
-			     int rowsAffected = preparedStatement.executeUpdate();
-			     
-			     if (rowsAffected > 0) {
-			         // Insert successful
-			         System.out.println("Inserted into wifi_bm successfully.");
-			     } else {
-			         // Insert failed
-			         System.out.println("Failed to insert into wifi_detail.");
-			     }
-			 } else {
-			     // No records found with the given id
-			     System.out.println("No records found with the id: " + id);
-			 }
-        	
-        }catch (SQLException e) {
-            System.out.println("에러발생");
-            throw new RuntimeException(e);
-        } finally {
-            closeResources(rs, preparedStatement, connection);
-        }
-	}
-	
-	public List<Wifibm> getBm(){
-		Database db = new Database();
-		List<Wifibm> result = new ArrayList<>();
+		List<BmWifi> result = new ArrayList<>();
 		Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
@@ -254,36 +201,151 @@ public class WifiService {
         	connection = db.getDb();
         	
         	//정보를 가져올 쿼리 
-        	String selectSql = "select * from wifi_bm;";
+        	String selectSql = "select * from bookmark_wifi;";
 			
 			 preparedStatement = connection.prepareStatement(selectSql);
 			
 			 rs = preparedStatement.executeQuery();
 			 while (rs.next()) {
-		            Wifibm bm = new Wifibm();
-		            bm.setId(rs.getString("id"));
-		            bm.setName(rs.getString("name"));
-		            bm.setCity(rs.getString("city"));
-		            bm.setStreet(rs.getString("street"));
-		            bm.setAddress(rs.getString("address"));
-		            bm.setLat(rs.getString("lat"));
-		            bm.setLnt(rs.getString("lnt"));
+				 BmWifi bm = new BmWifi();
+		            bm.setId(rs.getInt("id"));
+		            bm.setBmName(rs.getString("bmName"));
+		            bm.setWifiName(rs.getString("wifiName"));
+		            bm.setWifiId(rs.getString("wifiId"));
+		            bm.setReg_date(rs.getDate("registration_date"));
 		            result.add(bm);
 		        }
+			 if(result.size() != 0) {
+				 return result;
+			 }
         }catch (SQLException e) {
             System.out.println("에러발생");
             throw new RuntimeException(e);
         } finally {
             closeResources(rs, preparedStatement, connection);
         }
-        return result;
+        return null;
 	}
 	
-	public void updateBm(String id) {
-		
+	public void updateBmName(int id,String name) {
+		Database db = new Database();
+		Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        
+        try {
+        	connection = db.getDb();
+        	
+        	//정보를 가져올 쿼리 
+        	String updateSql = "update bookmark_list set name = ?,modification_date = CURRENT_TIMESTAMP where id = ? ";
+			
+			 preparedStatement = connection.prepareStatement(updateSql);
+			 preparedStatement.setString(1, name);
+			 preparedStatement.setInt(2, id);
+			 int affectedrow = preparedStatement.executeUpdate();
+			 
+			 String updateSql2 = "update bookmark_wifi set bmName = ? where id = ? ";
+			 preparedStatement = connection.prepareStatement(updateSql2);
+			 preparedStatement.setString(1, name);
+			 preparedStatement.setInt(2, id);
+			 int affectedrow2 = preparedStatement.executeUpdate();
+			 
+			 System.out.println("update complete:"+affectedrow+affectedrow2);
+        }catch (SQLException e) {
+            System.out.println("에러발생");
+            throw new RuntimeException(e);
+        } finally {
+            closeResources(rs, preparedStatement, connection);
+        }
 	}
+	
+	public void insertWifitoBm(String id,String name) {
+		Database db = new Database();
+		Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        System.out.println(id+name);
+        try {
+        	connection = db.getDb();
+        	
+        	//정보를 가져올 쿼리 
+        	String updateSql = "insert into bookmark_wifi (id, wifiId, bmName, wifiName) \n"
+        			+ "SELECT b.id,w.id, b.name, w.name \n"
+        			+ "FROM bookmark_list b \n"
+        			+ "CROSS JOIN wifi_detail w \n"
+        			+ "WHERE b.name = ? \n"
+        			+ "  AND w.id = ?  ";
+			
+			 preparedStatement = connection.prepareStatement(updateSql);
+			 preparedStatement.setString(1, id);
+			 preparedStatement.setString(2, name);
+			 
+			 int affectedrow=preparedStatement.executeUpdate();
+			 System.out.println("update into wifi_bm successfull:"+affectedrow);
+        }catch (SQLException e) {
+            System.out.println("에러발생");
+            throw new RuntimeException(e);
+        } finally {
+            closeResources(rs, preparedStatement, connection);
+        }
+	}
+	
 	public void deleteBm(String id) {
-		
+		Database db = new Database();
+		Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        
+        try {
+        	connection = db.getDb();
+        	
+        	//정보를 가져올 쿼리 
+        	String Sql = "delete from bookmark_wifi where wifiId = ? ;";
+
+			preparedStatement = connection.prepareStatement(Sql);
+			
+			preparedStatement.setString(1,id);
+			
+			int affectedRows = preparedStatement.executeUpdate(); // 변경된 행의 수를 반환
+	        System.out.println(affectedRows + " 행이 삭제되었습니다.");
+        }catch (SQLException e) {
+            System.out.println("에러발생");
+            throw new RuntimeException(e);
+        } finally {
+            closeResources(rs, preparedStatement, connection);
+        }
+	}
+	
+	public void deleteBm(int id) {
+		Database db = new Database();
+		Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        
+        try {
+        	connection = db.getDb();
+        	
+        	// 먼저 bookmark_wifi에서 관련 데이터를 삭제
+            String sql2 = "delete from bookmark_wifi where id = ? ";
+            preparedStatement = connection.prepareStatement(sql2);
+            preparedStatement.setInt(1, id);
+            int affectedRow2 = preparedStatement.executeUpdate();
+            System.out.println("Deleted from bookmark_wifi: " + affectedRow2);
+            
+            // 다음으로 bookmark_list에서 데이터 삭제
+            String sql = "delete from bookmark_list where id = ? ";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            int affectedRow1 = preparedStatement.executeUpdate();
+        	int affectedrow = preparedStatement.executeUpdate();
+        	System.out.println(affectedrow);
+        	System.out.println(affectedRow1);
+        }catch (SQLException e) {
+            System.out.println("에러발생");
+            throw new RuntimeException(e);
+        } finally {
+            closeResources(rs, preparedStatement, connection);
+        }
 	}
 	
 	private void closeResources(AutoCloseable... resources) {
