@@ -83,9 +83,10 @@
     <div class="menu-bar">
         <ul>
             <li><a href="index.jsp">홈</a></li>
-            <li><a href="top20wifi.jsp">가까운 와이파이 리스트 목록</a></li>
-            <li><a href="history.jsp">위치 히스토리 목록</a></li>
-            <li><a href="bookmark.jsp">북마크 목록 보기</a></li>
+            <li><a href="getApi.jsp">OPEN API Wifi 정보 가져오기</a></li>
+            <li><a href="top20wifi.jsp">와이파이 리스트 목록</a></li>
+            <li><a href="history.jsp">나의 북마크 목록</a></li>
+            <li><a href="bookmark.jsp">와이파이 북마크 목록 보기</a></li>
             <li><a href="bmAdd.jsp">북마크 추가하기</a></li>
         </ul>
     </div>

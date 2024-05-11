@@ -13,6 +13,20 @@ import java.io.IOException;
 @WebServlet("/CRUDHistory")
 public class WifiServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	@Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html; charset=utf-8");
+
+        try {
+            int count = publicAPI.StoreWifidateToDB();
+            request.setAttribute("count", count);
+            request.getRequestDispatcher("/getApi.jsp").forward(request, response);
+        } catch (Exception e) {
+            response.getWriter().println("<p>데이터 처리 중 오류 발생: " + e.getMessage() + "</p>");
+            e.printStackTrace();
+        }
+    }
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

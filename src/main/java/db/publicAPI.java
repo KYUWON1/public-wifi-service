@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.*;
-import java.sql.Date;
 import java.util.*;
 
 import org.json.JSONArray;
@@ -19,7 +18,7 @@ import db.model.Wifidetail;
 public class publicAPI {
 	
 	//API를 활용해서 받아온 데이터를 DB에 저장해주는 메소드 
-	public static void InsertDB(List<Wifidetail> wifiDetails) {
+	public static void InsertDB1(List<Wifidetail> wifiDetails) {
 		Database db = new Database();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -28,7 +27,7 @@ public class publicAPI {
         try {
         	connection = db.getDb();
         	
-        	String sql = " insert into wifi_detail (id, city, name, street, address, floor, build_type, builder, service_type, wifi_type, set_date, "
+        	String sql = " insert IGNORE into wifi_detail (id, city, name, street, address, floor, build_type, builder, service_type, wifi_type, set_date, "
         			+ " inout_door, wifi_environ, work_date) "
         			+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ); ";
         	preparedStatement = connection.prepareStatement(sql);
@@ -58,33 +57,10 @@ public class publicAPI {
             System.out.println("에러발생");
             throw new RuntimeException(e);
         } finally {
-            try {
-                if(rs != null && !rs.isClosed()){
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if(preparedStatement != null && !preparedStatement.isClosed()){
-                    preparedStatement.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if(connection != null && !connection.isClosed()){
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+        	closeResources(rs, preparedStatement, connection);
         }
         
-	}
-	
+	}	
 	//사용자에게 보여주는 간략한 형태의 wifi_locate DB 생성 
 	public static void InsertDB2(List<Wifilocate> wifilocates) {
 		Database db = new Database();
@@ -95,7 +71,7 @@ public class publicAPI {
         try {
         	connection = db.getDb();
         	
-        	String sql = " insert into wifi_locate (id, name, lat, lnt) "
+        	String sql = " insert IGNORE into wifi_locate (id, name, lat, lnt) "
         			+ "VALUES ( ?, ?, ?, ? ); ";
         	preparedStatement = connection.prepareStatement(sql);
         	for(Wifilocate wc : wifilocates) {
@@ -114,31 +90,20 @@ public class publicAPI {
             System.out.println("에러발생");
             throw new RuntimeException(e);
         } finally {
-            try {
-                if(rs != null && !rs.isClosed()){
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if(preparedStatement != null && !preparedStatement.isClosed()){
-                    preparedStatement.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                if(connection != null && !connection.isClosed()){
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        
+        	closeResources(rs, preparedStatement, connection);
+        }    
+	}
+	
+	private static void closeResources(AutoCloseable... resources) {
+	    for (AutoCloseable resource : resources) {
+	        if (resource != null) {
+	            try {
+	                resource.close();
+	            } catch (Exception e) {
+	                System.out.println("Failed to close resource: " + e.getMessage());
+	            }
+	        }
+	    }
 	}
 	
 	//공공데이터 API를 활용해서 데이터를 parsing한 후 JSON array로 return 해주는 함수 
@@ -179,11 +144,12 @@ public class publicAPI {
 		return null;
 	}
 	
-	//최초 DB 저장을 위한 Main
-    public static void main(String[] args) {
-     // 특정 데이터 접근 예제
+	//디비를 최종으로 저장하는메소드 
+	public static int StoreWifidateToDB() {
+		// 특정 데이터 접근 예제
         JSONArray array = getWifiData("1","1000");	
         List<Wifilocate> wifiList = new ArrayList<>();
+        int count = 0;
         //wifilocate, wifi_detail 2개의 테이블을 만들기 위해 코드를 2번 수정해서 사용했음 
         for(Object ob : (JSONArray)array) {
         	Wifilocate wifilocate = new Wifilocate(
@@ -195,9 +161,41 @@ public class publicAPI {
         	
         	wifiList.add(wifilocate);
         	System.out.println(wifilocate);
-      
         }
         InsertDB2(wifiList);
+        
+        List<Wifidetail> wifiList2 = new ArrayList<>();
+        for(Object ob : (JSONArray)array) {
+        	Wifidetail wifidetail = new Wifidetail(
+        			(String) ((JSONObject) ob).get("X_SWIFI_MGR_NO"),  // id: 관리번호
+        		    (String) ((JSONObject) ob).get("X_SWIFI_WRDOFC"),  // city: 자치구
+        		    (String) ((JSONObject) ob).get("X_SWIFI_MAIN_NM"), // name: 와이파이명
+        		    (String) ((JSONObject) ob).get("X_SWIFI_ADRES1"),  // street: 도로명주소
+        		    (String) ((JSONObject) ob).get("X_SWIFI_ADRES2"),  // address: 상세주소
+        		    (String) ((JSONObject) ob).get("X_SWIFI_INSTL_FLOOR"), // floor: 설치위치(층)
+        		    (String) ((JSONObject) ob).get("X_SWIFI_INSTL_TY"),    // bulid_type: 설치유형
+        		    (String) ((JSONObject) ob).get("X_SWIFI_INSTL_MBY"),   // bulider: 설치기관
+        		    (String) ((JSONObject) ob).get("X_SWIFI_SVC_SE"),      // service_type: 서비스구분
+        		    (String) ((JSONObject) ob).get("X_SWIFI_CMCWR"),       // wifi_type: 망종류
+        		    (String) ((JSONObject) ob).get("X_SWIFI_CNSTC_YEAR"),  // set_date: 설치년도
+        		    (String) ((JSONObject) ob).get("X_SWIFI_INOUT_DOOR"),  // inout_door: 실내외구분
+        		    (String) ((JSONObject) ob).get("X_SWIFI_REMARS3"),     // wifi_environ: wifi접속환경
+        		    (String) ((JSONObject) ob).get("WORK_DTTM")            // word_date: 작업일자
+        			);
+        	count++;
+        	wifiList2.add(wifidetail);
+        	System.out.println(wifidetail);
+        }
+        InsertDB1(wifiList2);
+        
+        return count;
+	}
+	
+	//최초 DB 저장을 위한 Main
+    public static void main(String[] args) {
+     // 특정 데이터 접근 예제
+       int count = StoreWifidateToDB();
+       System.out.println(count);
     } 
 }
 

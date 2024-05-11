@@ -345,7 +345,7 @@ public class WifiService {
             throw new RuntimeException(e);
         } finally {
             closeResources(rs, preparedStatement, connection);
-        }
+        }	
 	}
 	
 	private void closeResources(AutoCloseable... resources) {
