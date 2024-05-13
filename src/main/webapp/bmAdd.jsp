@@ -1,25 +1,24 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="EUC-KR">
+<meta charset="utf8">
 <title>Insert title here</title>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("bookmarkForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Æû Á¦Ãâ µ¿ÀÛÀ» ÁßÁö
+            event.preventDefault(); // í¼ ì œì¶œ ë™ì‘ì„ ì¤‘ì§€
             
             var bookmarkName = document.getElementById("bookmarkName").value;
             var bookmarkSequence = document.getElementById("bookmarkSequence").value;
             
-            // AJAX¸¦ »ç¿ëÇÏ¿© µ¥ÀÌÅÍ¸¦ ¹é¿£µå·Î Àü´Ş
+            // AJAXë¥¼ ì‚¬ìš©í•˜ì—¬ ë°ì´í„°ë¥¼ ë°±ì—”ë“œë¡œ ì „ë‹¬
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "CRUDHistory", true);
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    alert("ºÏ¸¶Å© Ãß°¡ °á°ú: " + xhr.responseText);
+                    alert("ë¶ë§ˆí¬ ì¶”ê°€ ê²°ê³¼: " + xhr.responseText);
                     window.location.href = 'http://localhost:8080/history.jsp';
                 }
             };
@@ -29,12 +28,12 @@
     });
 </script>
 <style>
-    /* ¸Ş´º¹Ù ½ºÅ¸ÀÏ */
+    /* ë©”ë‰´ë°” ìŠ¤íƒ€ì¼ */
     .menu-bar {
         width: 100%;
-        background-color: #f2f2f2; /* ¸Ş´º¹Ù ¹è°æ»ö */
+        background-color: #f2f2f2; /* ë©”ë‰´ë°” ë°°ê²½ìƒ‰ */
         overflow: hidden;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* ±×¸²ÀÚ È¿°ú */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* ê·¸ë¦¼ì íš¨ê³¼ */
     }
     .menu-bar ul {
         list-style-type: none;
@@ -43,39 +42,38 @@
         text-align: center;
     }
     .menu-bar li {
-        display: inline; /* Ç×¸ñµéÀ» °¡·Î·Î ³ª¿­ */
+        display: inline; /* í•­ëª©ë“¤ì„ ê°€ë¡œë¡œ ë‚˜ì—´ */
     }
     .menu-bar a {
         text-decoration: none;
-        color: black; /* ¸µÅ© ÅØ½ºÆ® »ö»ó */
-        padding: 15px 20px; /* ¸Ş´º Ç×¸ñ ³»ºÎ ¿©¹é */
+        color: black; /* ë§í¬ í…ìŠ¤íŠ¸ ìƒ‰ìƒ */
+        padding: 15px 20px; /* ë©”ë‰´ í•­ëª© ë‚´ë¶€ ì—¬ë°± */
         display: inline-block;
     }
     .menu-bar a:hover {
-        background-color: #ddd; /* ¸¶¿ì½º ¿À¹ö ½Ã ¹è°æ»ö º¯°æ */
-        color: #333; /* ¸¶¿ì½º ¿À¹ö ½Ã ÅØ½ºÆ® »ö»ó º¯°æ */
+        background-color: #ddd; /* ë§ˆìš°ìŠ¤ ì˜¤ë²„ ì‹œ ë°°ê²½ìƒ‰ ë³€ê²½ */
+        color: #333; /* ë§ˆìš°ìŠ¤ ì˜¤ë²„ ì‹œ í…ìŠ¤íŠ¸ ìƒ‰ìƒ ë³€ê²½ */
     }
 </style>
 </head>
 <body>
-<h1>¼­¿ï½Ã °ø°ø¿ÍÀÌÆÄÀÌ Á¤º¸ Á¦°ø ¼­ºñ½º</h1>
+<h1>ì„œìš¸ì‹œ ê³µê³µì™€ì´íŒŒì´ ì •ë³´ ì œê³µ ì„œë¹„ìŠ¤</h1>
     <div class="menu-bar">
         <ul>
-            <li><a href="index.jsp">È¨</a></li>
-            <li><a href="index.jsp">OPEN API Wifi Á¤º¸ °¡Á®¿À±â</a></li>
-            <li><a href="top20wifi.jsp">¿ÍÀÌÆÄÀÌ ¸®½ºÆ® ¸ñ·Ï</a></li>
-            <li><a href="history.jsp">³ªÀÇ ºÏ¸¶Å© ¸ñ·Ï</a></li>
-            <li><a href="bookmark.jsp">¿ÍÀÌÆÄÀÌ ºÏ¸¶Å© ¸ñ·Ï º¸±â</a></li>
-            <li><a href="bmAdd.jsp">ºÏ¸¶Å© Ãß°¡ÇÏ±â</a></li>
+            <li><a href="index.jsp">í™ˆ</a></li>
+            <li><a href="top20wifi.jsp">ì™€ì´íŒŒì´ ë¦¬ìŠ¤íŠ¸ ëª©ë¡</a></li>
+            <li><a href="history.jsp">ë‚˜ì˜ ë¶ë§ˆí¬ ëª©ë¡</a></li>
+            <li><a href="bookmark.jsp">ì™€ì´íŒŒì´ ë¶ë§ˆí¬ ëª©ë¡ ë³´ê¸°</a></li>
+            <li><a href="bmAdd.jsp">ë¶ë§ˆí¬ ì¶”ê°€í•˜ê¸°</a></li>
         </ul>
     </div>
-<h1>ºÏ¸¶Å© Ãß°¡ÇÏ±â</h1>
+<h1>ë¶ë§ˆí¬ ì¶”ê°€í•˜ê¸°</h1>
 <form id="bookmarkForm" action="submitBookmark" method="post">
-    <label for="bookmarkName">ºÏ¸¶Å© ÀÌ¸§:</label>
+    <label for="bookmarkName">ë¶ë§ˆí¬ ì´ë¦„:</label>
     <input type="text" id="bookmarkName" name="bookmarkName" required><br>
-    <label for="bookmarkSequence">ºÏ¸¶Å© ¼ø¼­:</label>
+    <label for="bookmarkSequence">ë¶ë§ˆí¬ ìˆœì„œ:</label>
     <input type="number" id="bookmarkSequence" name="bookmarkSequence" required><br>
-    <button type="submit">Ãß°¡ÇÏ±â</button>
+    <button type="submit">ì¶”ê°€í•˜ê¸°</button>
 </form>
 </body>
 </html>

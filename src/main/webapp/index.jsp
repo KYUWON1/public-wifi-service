@@ -1,17 +1,16 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="EUC-KR">
-<title>¼­¿ï½Ã °ø°ø¿ÍÀÌÆÄÀÌ Á¤º¸ Á¦°ø ¼­ºñ½º</title>
+<meta charset="utf8">
+<title>ì„œìš¸ì‹œ ê³µê³µì™€ì´íŒŒì´ ì •ë³´ ì œê³µ ì„œë¹„ìŠ¤</title>
 <style>
-    /* ¸Þ´º¹Ù ½ºÅ¸ÀÏ */
+    /* ë©”ë‰´ë°” ìŠ¤íƒ€ì¼ */
     .menu-bar {
         width: 100%;
-        background-color: #f2f2f2; /* ¸Þ´º¹Ù ¹è°æ»ö */
+        background-color: #f2f2f2; /* ë©”ë‰´ë°” ë°°ê²½ìƒ‰ */
         overflow: hidden;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* ±×¸²ÀÚ È¿°ú */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* ê·¸ë¦¼ìž íš¨ê³¼ */
     }
     .menu-bar ul {
         list-style-type: none;
@@ -20,17 +19,17 @@
         text-align: center;
     }
     .menu-bar li {
-        display: inline; /* Ç×¸ñµéÀ» °¡·Î·Î ³ª¿­ */
+        display: inline; /* í•­ëª©ë“¤ì„ ê°€ë¡œë¡œ ë‚˜ì—´ */
     }
     .menu-bar a {
         text-decoration: none;
-        color: black; /* ¸µÅ© ÅØ½ºÆ® »ö»ó */
-        padding: 15px 20px; /* ¸Þ´º Ç×¸ñ ³»ºÎ ¿©¹é */
+        color: black; /* ë§í¬ í…ìŠ¤íŠ¸ ìƒ‰ìƒ */
+        padding: 15px 20px; /* ë©”ë‰´ í•­ëª© ë‚´ë¶€ ì—¬ë°± */
         display: inline-block;
     }
     .menu-bar a:hover {
-        background-color: #ddd; /* ¸¶¿ì½º ¿À¹ö ½Ã ¹è°æ»ö º¯°æ */
-        color: #333; /* ¸¶¿ì½º ¿À¹ö ½Ã ÅØ½ºÆ® »ö»ó º¯°æ */
+        background-color: #ddd; /* ë§ˆìš°ìŠ¤ ì˜¤ë²„ ì‹œ ë°°ê²½ìƒ‰ ë³€ê²½ */
+        color: #333; /* ë§ˆìš°ìŠ¤ ì˜¤ë²„ ì‹œ í…ìŠ¤íŠ¸ ìƒ‰ìƒ ë³€ê²½ */
     }
 </style>
 <script>
@@ -69,34 +68,33 @@
                 document.getElementById('latInput').value = position.coords.latitude;
                 document.getElementById('lngInput').value = position.coords.longitude;
             }, function(error) {
-                alert("À§Ä¡ Á¤º¸¸¦ °¡Á®¿À´Âµ¥ ½ÇÆÐÇß½À´Ï´Ù. ¿¡·¯ ÄÚµå: " + error.code);
+                alert("ìœ„ì¹˜ ì •ë³´ë¥¼ ê°€ì ¸ì˜¤ëŠ”ë° ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤. ì—ëŸ¬ ì½”ë“œ: " + error.code);
             });
         } else {
-            alert("ÀÌ ºê¶ó¿ìÀú¿¡¼­´Â GeolocationÀÌ Áö¿øµÇÁö ¾Ê½À´Ï´Ù.");
+            alert("ì´ ë¸Œë¼ìš°ì €ì—ì„œëŠ” Geolocationì´ ì§€ì›ë˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
         }
     }
 </script>
 </head>
 <body>
-    <h1>¼­¿ï½Ã °ø°ø¿ÍÀÌÆÄÀÌ Á¤º¸ Á¦°ø ¼­ºñ½º</h1>
+    <h1>ì„œìš¸ì‹œ ê³µê³µì™€ì´íŒŒì´ ì •ë³´ ì œê³µ ì„œë¹„ìŠ¤</h1>
 
     <div class="menu-bar">
         <ul>
-            <li><a href="index.jsp">È¨</a></li>
-            <li><a href="getApi.jsp">OPEN API Wifi Á¤º¸ °¡Á®¿À±â</a></li>
-            <li><a href="top20wifi.jsp">¿ÍÀÌÆÄÀÌ ¸®½ºÆ® ¸ñ·Ï</a></li>
-            <li><a href="history.jsp">³ªÀÇ ºÏ¸¶Å© ¸ñ·Ï</a></li>
-            <li><a href="bookmark.jsp">¿ÍÀÌÆÄÀÌ ºÏ¸¶Å© ¸ñ·Ï º¸±â</a></li>
-            <li><a href="bmAdd.jsp">ºÏ¸¶Å© Ãß°¡ÇÏ±â</a></li>
+            <li><a href="index.jsp">í™ˆ</a></li>
+            <li><a href="top20wifi.jsp">ì™€ì´íŒŒì´ ë¦¬ìŠ¤íŠ¸ ëª©ë¡</a></li>
+            <li><a href="history.jsp">ë‚˜ì˜ ë¶ë§ˆí¬ ëª©ë¡</a></li>
+            <li><a href="bookmark.jsp">ì™€ì´íŒŒì´ ë¶ë§ˆí¬ ëª©ë¡ ë³´ê¸°</a></li>
+            <li><a href="bmAdd.jsp">ë¶ë§ˆí¬ ì¶”ê°€í•˜ê¸°</a></li>
         </ul>
     </div>
     
     <form action="top20wifi.jsp" method="GET">
-    	<h3>Ã£°í½ÍÀº À§Ä¡ÀÇ ÁÂÇ¥¸¦ ÀÔ·ÂÇÏ¼¼¿ä</h3>
-        <h3>LAT(À§µµ): <input type="text" id="latInput" name="LAT"></h3>
-        <h3>LNT(°æµµ): <input type="text" id="lngInput" name="LNT"></h3>
-        <button type="button" onclick="fillLocation()">ÇöÀç À§Ä¡ »ç¿ë</button>
-        <input type="submit" value="È®ÀÎ">
+    	<h3>ì°¾ê³ ì‹¶ì€ ìœ„ì¹˜ì˜ ì¢Œí‘œë¥¼ ìž…ë ¥í•˜ì„¸ìš”</h3>
+        <h3>LAT(ìœ„ë„): <input type="text" id="latInput" name="LAT"></h3>
+        <h3>LNT(ê²½ë„): <input type="text" id="lngInput" name="LNT"></h3>
+        <button type="button" onclick="fillLocation()">í˜„ìž¬ ìœ„ì¹˜ ì‚¬ìš©</button>
+        <input type="submit" value="í™•ì¸">
     </form>
 </body>
 </html>

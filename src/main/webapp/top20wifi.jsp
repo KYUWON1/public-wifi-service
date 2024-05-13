@@ -2,8 +2,7 @@
 <%@page import="db.WifiService" %>
 <%@page import="java.util.*" %>
 
-<%@ page language="java" contentType="text/html; charset=utf8"
-    pageEncoding="utf8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!DOCTYPE html>
 <html>
 <head>

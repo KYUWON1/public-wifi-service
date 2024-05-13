@@ -1,10 +1,10 @@
 package db;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class WifiServlet extends HttpServlet {
 	
 	@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html; charset=utf-8");
+		request.setCharacterEncoding("UTF-8");  // 요청 인코딩 설정
 
         try {
             int count = publicAPI.StoreWifidateToDB();
@@ -29,7 +29,8 @@ public class WifiServlet extends HttpServlet {
     }
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		request.setCharacterEncoding("UTF-8");  // 요청 인코딩 설정
 		String action = request.getParameter("action");
 		WifiService ws = new WifiService();
 		
@@ -39,8 +40,7 @@ public class WifiServlet extends HttpServlet {
 			int sequnece = Integer.parseInt(seq);
 			
 			ws.insertBm(name,sequnece);
-			response.setContentType("text/plain");
-			response.setCharacterEncoding("utf8");
+			response.setCharacterEncoding("UTF-8");  // 요청 인코딩 설정
 			response.getWriter().write("Bookmark Inserted Id: "+sequnece);
 		}else if(action.equals("addWifi")){
 			String bookmarkId  = request.getParameter("bookmarkId");
@@ -49,23 +49,23 @@ public class WifiServlet extends HttpServlet {
 			System.out.println(bookmarkId+wifiId);
 			
 			ws.insertWifitoBm(bookmarkId,wifiId);
-			response.setContentType("text/plain");
-			response.setCharacterEncoding("utf8");
+			response.setCharacterEncoding("UTF-8");  // 요청 인코딩 설정
 			response.getWriter().write("Bookmark Inserted Id: "+wifiId);
 		}else if(action.equals("update")){
 			String fixname = request.getParameter("name");
+			System.out.println(fixname);
 			String id = request.getParameter("id");
 			int intId = Integer.parseInt(id);
 			
 			ws.updateBmName(intId,fixname);
-			response.setContentType("text/plain");
-			response.setCharacterEncoding("utf8");
+			response.setCharacterEncoding("UTF-8");  // 요청 인코딩 설정
 			response.getWriter().write("Bookmark update name: "+fixname);
 		}	
 	}
 
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		req.setCharacterEncoding("UTF-8");  // 요청 인코딩 설정
 		WifiService ws = new WifiService();
 		String action = req.getParameter("action");
 		if(action.equals("deleteList")) {
@@ -73,8 +73,7 @@ public class WifiServlet extends HttpServlet {
 			int sequnece = Integer.parseInt(seq);
 			
 			ws.deleteBm(sequnece);
-			res.setContentType("text/plain");
-			res.setCharacterEncoding("utf8");
+			res.setCharacterEncoding("UTF-8");  // 요청 인코딩 설정
 			res.getWriter().write("Bookmark Deleted Id: "+sequnece);
 		}else if(action.equals("deleteOne")) {
 			String id = req.getParameter("id");
@@ -86,8 +85,7 @@ public class WifiServlet extends HttpServlet {
 		    }
 		    
 			ws.deleteBm(id);
-			res.setContentType("text/plain");
-			res.setCharacterEncoding("utf8");
+			res.setCharacterEncoding("UTF-8");  // 요청 인코딩 설정
 			res.getWriter().write("Bookmark Deleted Id: "+id);
 		}
 	}

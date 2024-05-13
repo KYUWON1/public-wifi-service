@@ -239,6 +239,7 @@ public class WifiService {
         	//정보를 가져올 쿼리 
         	String updateSql = "update bookmark_list set name = ?,modification_date = CURRENT_TIMESTAMP where id = ? ";
 			
+        	System.out.println(name);
 			 preparedStatement = connection.prepareStatement(updateSql);
 			 preparedStatement.setString(1, name);
 			 preparedStatement.setInt(2, id);

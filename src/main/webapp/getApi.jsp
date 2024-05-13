@@ -3,15 +3,14 @@
 <%@page import="org.json.JSONObject" %>
 <%@page import="org.json.JSONArray" %>
 
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf8">
-<title>¼­¿ï½Ã °ø°ø¿ÍÀÌÆÄÀÌ Á¤º¸ Á¦°ø ¼­ºñ½º</title>
+<title>ì„œìš¸ì‹œ ê³µê³µì™€ì´íŒŒì´ ì •ë³´ ì œê³µ ì„œë¹„ìŠ¤</title>
 <script>
-// AJAX¸¦ »ç¿ëÇØ ºÏ¸¶Å©¸¦ Ãß°¡ÇÏ´Â ÇÔ¼ö
+// AJAXë¥¼ ì‚¬ìš©í•´ ë¶ë§ˆí¬ë¥¼ ì¶”ê°€í•˜ëŠ” í•¨ìˆ˜
     function getWifiData() {
     	var xhr = new XMLHttpRequest();
         xhr.open("GET", "CRUDHistory", true);
@@ -19,9 +18,9 @@
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 try {
-                    alert("µ¥ÀÌÅÍ °¡Á®¿À±â ¼º°ø!");
+                    alert("ë°ì´í„° ê°€ì ¸ì˜¤ê¸° ì„±ê³µ!");
                 } catch (e) {
-                    alert("µ¥ÀÌÅÍ Ã³¸® Áß ¿À·ù ¹ß»ý: " + e);
+                    alert("ë°ì´í„° ì²˜ë¦¬ ì¤‘ ì˜¤ë¥˜ ë°œìƒ: " + e);
                 }
             }
         };
@@ -29,12 +28,12 @@
     }
 </script>
 <style>
-    /* ¸Þ´º¹Ù ½ºÅ¸ÀÏ */
+    /* ë©”ë‰´ë°” ìŠ¤íƒ€ì¼ */
     .menu-bar {
         width: 100%;
-        background-color: #f2f2f2; /* ¸Þ´º¹Ù ¹è°æ»ö */
+        background-color: #f2f2f2; /* ë©”ë‰´ë°” ë°°ê²½ìƒ‰ */
         overflow: hidden;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* ±×¸²ÀÚ È¿°ú */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* ê·¸ë¦¼ìž íš¨ê³¼ */
     }
     .menu-bar ul {
         list-style-type: none;
@@ -43,35 +42,35 @@
         text-align: center;
     }
     .menu-bar li {
-        display: inline; /* Ç×¸ñµéÀ» °¡·Î·Î ³ª¿­ */
+        display: inline; /* í•­ëª©ë“¤ì„ ê°€ë¡œë¡œ ë‚˜ì—´ */
     }
     .menu-bar a {
         text-decoration: none;
-        color: black; /* ¸µÅ© ÅØ½ºÆ® »ö»ó */
-        padding: 15px 20px; /* ¸Þ´º Ç×¸ñ ³»ºÎ ¿©¹é */
+        color: black; /* ë§í¬ í…ìŠ¤íŠ¸ ìƒ‰ìƒ */
+        padding: 15px 20px; /* ë©”ë‰´ í•­ëª© ë‚´ë¶€ ì—¬ë°± */
         display: inline-block;
     }
     .menu-bar a:hover {
-        background-color: #ddd; /* ¸¶¿ì½º ¿À¹ö ½Ã ¹è°æ»ö º¯°æ */
-        color: #333; /* ¸¶¿ì½º ¿À¹ö ½Ã ÅØ½ºÆ® »ö»ó º¯°æ */
+        background-color: #ddd; /* ë§ˆìš°ìŠ¤ ì˜¤ë²„ ì‹œ ë°°ê²½ìƒ‰ ë³€ê²½ */
+        color: #333; /* ë§ˆìš°ìŠ¤ ì˜¤ë²„ ì‹œ í…ìŠ¤íŠ¸ ìƒ‰ìƒ ë³€ê²½ */
     }
 </style>
 </head>
 <body>
-    <h1>¼­¿ï½Ã °ø°ø¿ÍÀÌÆÄÀÌ Á¤º¸ Á¦°ø ¼­ºñ½º</h1>
+    <h1>ì„œìš¸ì‹œ ê³µê³µì™€ì´íŒŒì´ ì •ë³´ ì œê³µ ì„œë¹„ìŠ¤</h1>
 
     <div class="menu-bar">
         <ul>
-            <li><a href="index.jsp">È¨</a></li>
-            <li><a href="getApi.jsp">OPEN API Wifi Á¤º¸ °¡Á®¿À±â</a></li>
-            <li><a href="top20wifi.jsp">¿ÍÀÌÆÄÀÌ ¸®½ºÆ® ¸ñ·Ï</a></li>
-            <li><a href="history.jsp">³ªÀÇ ºÏ¸¶Å© ¸ñ·Ï</a></li>
-            <li><a href="bookmark.jsp">¿ÍÀÌÆÄÀÌ ºÏ¸¶Å© ¸ñ·Ï º¸±â</a></li>
-            <li><a href="bmAdd.jsp">ºÏ¸¶Å© Ãß°¡ÇÏ±â</a></li>
+            <li><a href="index.jsp">í™ˆ</a></li>
+            <li><a href="getApi.jsp">OPEN API Wifi ì •ë³´ ê°€ì ¸ì˜¤ê¸°</a></li>
+            <li><a href="top20wifi.jsp">ì™€ì´íŒŒì´ ë¦¬ìŠ¤íŠ¸ ëª©ë¡</a></li>
+            <li><a href="history.jsp">ë‚˜ì˜ ë¶ë§ˆí¬ ëª©ë¡</a></li>
+            <li><a href="bookmark.jsp">ì™€ì´íŒŒì´ ë¶ë§ˆí¬ ëª©ë¡ ë³´ê¸°</a></li>
+            <li><a href="bmAdd.jsp">ë¶ë§ˆí¬ ì¶”ê°€í•˜ê¸°</a></li>
         </ul>
     </div>
-    <button onclick="getWifiData()">¿ÍÀÌÆÄÀÌ µ¥ÀÌÅÍ °¡Á®¿À±â</button>
-    <p><%= request.getAttribute("count") %>°³ÀÇ µ¥ÀÌÅÍ¸¦ µ¥ÀÌÅÍº£ÀÌ½º¿¡ ÀúÀåÇß½À´Ï´Ù.</p>
-    <a href="index.jsp">È¨À¸·Î µ¹¾Æ°¡±â</a>
+    <button onclick="getWifiData()">ì™€ì´íŒŒì´ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°</button>
+    <p><%= request.getAttribute("count") %>ê°œì˜ ë°ì´í„°ë¥¼ ë°ì´í„°ë² ì´ìŠ¤ì— ì €ìž¥í–ˆìŠµë‹ˆë‹¤.</p>
+    <a href="index.jsp">í™ˆìœ¼ë¡œ ëŒì•„ê°€ê¸°</a>
 </body>
 </html>

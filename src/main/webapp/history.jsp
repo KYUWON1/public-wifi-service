@@ -3,8 +3,7 @@
 <%@page import="db.WifiService" %>
 <%@page import="java.util.*" %>
 
-<%@ page language="java" contentType="text/html; charset=utf8"
-    pageEncoding="utf8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -70,10 +69,10 @@
     }
     function updateBookmark(id) {
     	var fixName = document.getElementById('name'+id).value;
-    	//console.log(fixName);
+    	console.log(fixName);
     	
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "insertHistory", true);
+        xhr.open("POST", "CRUDHistory", true);
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
